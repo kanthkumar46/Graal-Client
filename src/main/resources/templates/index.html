@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GRAph ALigner</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="lib/vis/vis.min.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">
+                GRAph ALigner (GRAAL) for Program Dependence Graphs
+            </a>
+        </div>
+        <span class="link">
+            <a href="https://github.com/kanthkumar46/GRAAL"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+        </span>
+    </div>
+</nav>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form action="/pdg" method="post" class="pdg-form">
+                <div class="form-group">
+                        <textarea class="form-control" rows="12" id="program1" name="program" placeholder="code..."
+                                  th:text="${code}"/>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-secondary">Create PDG</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <form action="/pdg" method="post" class="pdg-form">
+                <div class="form-group">
+                        <textarea class="form-control" rows="12" id="program2" name="program" placeholder="code..."
+                                  th:text="${code}"/>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-secondary">Create PDG</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="graph-area" id="program1-graph-area"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="graph-area" id="program2-graph-area"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <form action="/align" method="post" class="align-pdg-form">
+                <input type="hidden" name="originalProgram" id="originalProgram"/>
+                <input type="hidden" name="suspectProgram" id="suspectProgram" />
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-secondary">Align PDGs</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Possible Alignment</h3>
+                </div>
+                <div id="alignments" class="panel-body">
+                    <ul class="list-group"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <span class="link">
+            <a href="https://github.com/kanthkumar46/GRAAL"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+        </span>
+        <span class="text">
+            <h5><a href="/">GRAph ALigner(GRAAL)</a></h5>
+        </span>
+    </div>
+</footer>
+
+<script src="lib/jQuery/jquery.min.js"></script>
+<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="lib/behave/behave.js"></script>
+<script src="lib/vis/vis.min.js"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+        var graphJson = [[${graph}]];
+        var originalGraphJson = [[${originalGraph}]];
+        var suspectGraphJson = [[${suspectGraph}]];
+        var alignmentJson = [[${alignment}]];
+    /*]]>*/
+    </script>
+<script type="text/javascript" src="js/app.js"></script>
+</body>
+</html>
