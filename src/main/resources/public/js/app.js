@@ -1,19 +1,5 @@
 $(function() {
-    new Behave({
-        textarea: document.getElementById('program1')
-    });
-
-    new Behave({
-        textarea: document.getElementById('program2')
-    });
-
-    if(sessionStorage.getItem("program1")) {
-        $("#program1").val(sessionStorage.getItem("program1"));
-    }
-
-    if(sessionStorage.getItem("program2")) {
-        $("#program2").val(sessionStorage.getItem("program2"));
-    }
+    init();
 
     $('.pdg-form').submit(function() {
         var textareaId = $(this).find("textarea").attr('id');
@@ -52,7 +38,7 @@ $(function() {
     if(alignmentJson){
         var alignment = JSON.parse(alignmentJson);
         var temp = alignment.map(function(obj) {
-            return obj[0]["label"]+"   <------>  "+obj[1]["label"];
+            return obj[0]["label"]+"  <------>  "+obj[1]["label"];
         });
 
         var list = $("#alignments>ul")
@@ -61,6 +47,9 @@ $(function() {
         });
     }
 
+    if(edgeCorrectness){
+        $("#edgeCorrectness").text(edgeCorrectness+"%");
+    }
 });
 
 var createVisDataSetNodes = function(vertexSet) {
@@ -136,9 +125,27 @@ var options = {
     }
 }
 
-var storePrograms = function(){
+var storePrograms = function() {
     var program1 = $("#program1").val();
     var program2 = $("#program2").val();
     sessionStorage.setItem("program1", program1);
     sessionStorage.setItem("program2", program2);
+}
+
+var init = function() {
+    new Behave({
+        textarea: document.getElementById('program1')
+    });
+
+    new Behave({
+        textarea: document.getElementById('program2')
+    });
+
+    if(sessionStorage.getItem("program1")) {
+        $("#program1").val(sessionStorage.getItem("program1"));
+    }
+
+    if(sessionStorage.getItem("program2")) {
+        $("#program2").val(sessionStorage.getItem("program2"));
+    }
 }

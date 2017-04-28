@@ -6,7 +6,10 @@ import edu.graal.ImmutablePDGGenerator;
 import edu.graal.PDGGenerator;
 import edu.graal.adapter.GraalAdapter;
 import edu.graal.graphs.PDGraph;
+import edu.graal.graphs.types.PDGVertex;
 import edu.graal.utils.GraalResult;
+import javaslang.Tuple2;
+import javaslang.collection.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +42,8 @@ public class GraalController {
                 "    }\n" +
                 "}";
         model.addAttribute("code" , code);
+        model.addAttribute("signatureSimilarityContribution", 0.6);
+        model.addAttribute("originalCostContribution", 0.6);
     }
 
     @RequestMapping("/")
@@ -57,6 +62,8 @@ public class GraalController {
     @RequestMapping("/align")
     public String alignPDG(@RequestParam(value="originalProgram") String originalProgram,
                            @RequestParam(value="suspectProgram") String suspectProgram,
+                           @RequestParam(value="signatureSimilarityContribution") float signatureSimilarityContribution,
+                           @RequestParam(value="originalCostContribution") float originalCostContribution,
                            Model model) throws JsonProcessingException {
         PDGraph original = pdgGenerator.createPDG(originalProgram, 0);
         PDGraph suspect = pdgGenerator.createPDG(suspectProgram, 0);
@@ -66,10 +73,17 @@ public class GraalController {
 
         model.addAttribute("originalGraph", originalGraph);
         model.addAttribute("suspectGraph", suspectGraph);
+        model.addAttribute("signatureSimilarityContribution", signatureSimilarityContribution);
+        model.addAttribute("originalCostContribution", originalCostContribution);
 
-        GraalResult graalResult = graalAlgorithm.execute(original, suspect);
-        String alignmentJson = graalAdapter.convertToJson(graalResult.findBestAlignment());
+        GraalResult graalResult = graalAlgorithm.execute(original, suspect,
+                signatureSimilarityContribution, originalCostContribution);
+        Array<Tuple2<PDGVertex, PDGVertex>> bestAlignment = graalResult.findBestAlignment();
+        int edgeCorrectnessPercentage = graalResult.findEdgeCorrectness(original.getAsUndirectedGraphWithoutLoops(),
+                suspect.getAsUndirectedGraphWithoutLoops(), bestAlignment);
+        String alignmentJson = graalAdapter.convertToJson(bestAlignment);
         model.addAttribute("alignment", alignmentJson);
+        model.addAttribute("edgeCorrectness", edgeCorrectnessPercentage);
         return "index";
     }
 

@@ -39,6 +39,10 @@ body>.container {
     border: 1px solid lightgray;
 }
 
+.align-pdg-form {
+    text-align: center;
+}
+
 .form-actions {
     margin: 0;
     background-color: transparent;
@@ -66,4 +70,8 @@ body>.container {
     float: left;
     margin: 15px;
     color: gainsboro;
+}
+
+.panel{
+    text-align: center;
 }
